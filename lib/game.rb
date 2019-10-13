@@ -20,24 +20,18 @@ class Game
       score_diff == 0
   end
 
-  private def is_advantage_p1
+  private def is_advantage
     !is_early_game &&
-      score_diff == 1
+      score_diff.abs == 1
   end
 
-  private def is_advantage_p2
+  private def is_game_finished
     !is_early_game &&
-      score_diff == -1
+      score_diff.abs >= 2
   end
 
-  private def is_winner_p1
-    !is_early_game &&
-      score_diff >= 2
-  end
-
-  private def is_winner_p2
-    !is_early_game &&
-      score_diff <= -2
+  private def leading_player
+    score_diff > 0 ? "Player #1" : "Player #2"
   end
 
   def score
@@ -46,19 +40,15 @@ class Game
       "#{SCORES.fetch(@player1_score)} - #{SCORES.fetch(@player2_score)}"
     when is_deuce
       "Deuce"
-    when is_advantage_p1
-      "Advantage Player #1!"
-    when is_advantage_p2
-      "Advantage Player #2!"
-    when is_winner_p1
-      "A winner is Player #1!"
-    when is_winner_p2
-      "A winner is Player #2!"
+    when is_advantage
+      "Advantage #{leading_player}!"
+    when is_game_finished
+      "A winner is #{leading_player}!"
     end
   end
 
   private def assert_game_not_finished!
-    if is_winner_p1 || is_winner_p2
+    if is_game_finished
       raise RuntimeError, "Game is finshed"
     end
   end
