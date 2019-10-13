@@ -10,13 +10,14 @@ class Game
     @player1_score - @player2_score
   end
 
-  private def is_deuce
-    @player1_score > 2 && score_diff == 0
+  private def is_early_game
+    [@player1_score, @player2_score].min <= 2 &&
+      [@player1_score, @player2_score].max <= 3
   end
 
-  private def is_early_game
-    !is_deuce &&
-      @player1_score < 4 && @player2_score < 4
+  private def is_deuce
+    !is_early_game &&
+      score_diff == 0
   end
 
   private def is_advantage_p1
@@ -41,10 +42,10 @@ class Game
 
   def score
     case
-    when is_deuce
-      "Deuce"
     when is_early_game
       "#{SCORES.fetch(@player1_score)} - #{SCORES.fetch(@player2_score)}"
+    when is_deuce
+      "Deuce"
     when is_advantage_p1
       "Advantage Player #1!"
     when is_advantage_p2
